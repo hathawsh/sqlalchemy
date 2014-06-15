@@ -2139,3 +2139,14 @@ class ForUpdateTest(fixtures.TestBase, AssertsCompiledSQL):
         self.assert_compile(s2,
             "SELECT t_1.c FROM t AS t_1 FOR SHARE OF t_1",
             dialect="postgresql")
+
+    def test_weak_param(self):
+        t = table('t', column('c'))
+        s = select([t]).with_for_update(weak=True)
+        s2 = visitors.ReplacingCloningVisitor().traverse(s)
+        assert s2._for_update_arg is not s._for_update_arg
+        eq_(s2._for_update_arg.weak, True)
+        self.assert_compile(s2,
+            "SELECT t.c FROM t FOR NO KEY UPDATE",
+            dialect="postgresql")
+

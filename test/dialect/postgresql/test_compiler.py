@@ -310,6 +310,17 @@ class CompileTest(fixtures.TestBase, AssertsCompiledSQL):
             "FROM mytable WHERE mytable.myid = %(myid_1)s FOR SHARE")
 
         self.assert_compile(
+            table1.select(table1.c.myid == 7).with_for_update(weak=True),
+            "SELECT mytable.myid, mytable.name, mytable.description "
+            "FROM mytable WHERE mytable.myid = %(myid_1)s FOR NO KEY UPDATE")
+
+        self.assert_compile(
+            table1.select(table1.c.myid == 7).with_for_update(
+                read=True, weak=True),
+            "SELECT mytable.myid, mytable.name, mytable.description "
+            "FROM mytable WHERE mytable.myid = %(myid_1)s FOR KEY SHARE")
+
+        self.assert_compile(
             table1.select(table1.c.myid == 7).
                     with_for_update(read=True, nowait=True),
             "SELECT mytable.myid, mytable.name, mytable.description "

@@ -1587,7 +1587,7 @@ class GenerativeSelect(SelectBase):
         self._for_update_arg = ForUpdateArg.parse_legacy_select(value)
 
     @_generative
-    def with_for_update(self, nowait=False, read=False, of=None):
+    def with_for_update(self, nowait=False, read=False, of=None, weak=False):
         """Specify a ``FOR UPDATE`` clause for this :class:`.GenerativeSelect`.
 
         E.g.::
@@ -1625,7 +1625,8 @@ class GenerativeSelect(SelectBase):
         .. versionadded:: 0.9.0
 
         """
-        self._for_update_arg = ForUpdateArg(nowait=nowait, read=read, of=of)
+        self._for_update_arg = ForUpdateArg(
+            nowait=nowait, read=read, of=of, weak=weak)
 
     @_generative
     def apply_labels(self):

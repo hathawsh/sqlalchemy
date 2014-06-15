@@ -60,10 +60,11 @@ class ForUpdateTest(_fixtures.FixtureTest):
         mapper(User, users)
 
     def _assert(self, read=False, nowait=False, of=None,
-                    assert_q_of=None, assert_sel_of=None):
+                assert_q_of=None, assert_sel_of=None, weak=False):
         User = self.classes.User
         s = Session()
-        q = s.query(User).with_for_update(read=read, nowait=nowait, of=of)
+        q = s.query(User).with_for_update(
+            read=read, nowait=nowait, of=of, weak=weak)
         sel = q._compile_context().statement
 
         assert q._for_update_arg.read is read
@@ -71,6 +72,9 @@ class ForUpdateTest(_fixtures.FixtureTest):
 
         assert q._for_update_arg.nowait is nowait
         assert sel._for_update_arg.nowait is nowait
+
+        assert q._for_update_arg.weak is weak
+        assert sel._for_update_arg.weak is weak
 
         eq_(q._for_update_arg.of, assert_q_of)
         eq_(sel._for_update_arg.of, assert_sel_of)
@@ -83,6 +87,9 @@ class ForUpdateTest(_fixtures.FixtureTest):
 
     def test_nowait(self):
         self._assert(nowait=True)
+
+    def test_weak(self):
+        self._assert(weak=True)
 
     def test_of_single_col(self):
         User, users = self.classes.User, self.tables.users
