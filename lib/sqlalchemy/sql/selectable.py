@@ -1323,7 +1323,7 @@ class ForUpdateArg(ClauseElement):
         if self.of is not None:
             self.of = [clone(col, **kw) for col in self.of]
 
-    def __init__(self, nowait=False, read=False, of=None):
+    def __init__(self, nowait=False, read=False, of=None, weak=False):
         """Represents arguments specified to :meth:`.Select.for_update`.
 
         .. versionadded:: 0.9.0
@@ -1336,6 +1336,7 @@ class ForUpdateArg(ClauseElement):
                         for elem in util.to_list(of)]
         else:
             self.of = None
+        self.weak = weak
 
 
 class SelectBase(Executable, FromClause):

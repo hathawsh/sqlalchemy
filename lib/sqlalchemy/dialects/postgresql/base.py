@@ -1197,9 +1197,15 @@ class PGCompiler(compiler.SQLCompiler):
     def for_update_clause(self, select):
 
         if select._for_update_arg.read:
-            tmp = " FOR SHARE"
+            if select._for_update_arg.weak:
+                tmp = " FOR KEY SHARE"
+            else:
+                tmp = " FOR SHARE"
         else:
-            tmp = " FOR UPDATE"
+            if select._for_update_arg.weak:
+                tmp = " FOR NO KEY UPDATE"
+            else:
+                tmp = " FOR UPDATE"
 
         if select._for_update_arg.of:
             tables = util.OrderedSet(

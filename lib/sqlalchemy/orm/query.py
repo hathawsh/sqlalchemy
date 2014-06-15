@@ -1158,7 +1158,7 @@ class Query(object):
         self._for_update_arg = LockmodeArg.parse_legacy_query(mode)
 
     @_generative()
-    def with_for_update(self, read=False, nowait=False, of=None):
+    def with_for_update(self, read=False, nowait=False, of=None, weak=False):
         """return a new :class:`.Query` with the specified options for the
         ``FOR UPDATE`` clause.
 
@@ -1186,7 +1186,8 @@ class Query(object):
             full argument and behavioral description.
 
         """
-        self._for_update_arg = LockmodeArg(read=read, nowait=nowait, of=of)
+        self._for_update_arg = LockmodeArg(
+            read=read, nowait=nowait, of=of, weak=weak)
 
     @_generative()
     def params(self, *args, **kwargs):
